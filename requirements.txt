@@ -1,1 +1,7 @@
 pandas
+transformers
+datasets
+torch
+sentencepiece
+evaluate
+rouge-score
