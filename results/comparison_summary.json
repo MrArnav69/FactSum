@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-01-12T15:34:29.340015",
+  "configuration": {
+    "num_examples": 10,
+    "fusion_strategy": "concatenate",
+    "chunking": {
+      "max_tokens": 1024,
+      "overlap_tokens": 128,
+      "use_sentence_boundaries": true,
+      "min_chunk_tokens": 256,
+      "preserve_paragraphs": true
+    },
+    "summarization": {
+      "chunk_max_length": 256,
+      "chunk_min_length": 64,
+      "chunk_num_beams": 8,
+      "chunk_length_penalty": 1.0,
+      "chunk_no_repeat_ngram_size": 3,
+      "cluster_max_length": 256,
+      "cluster_min_length": 100,
+      "cluster_num_beams": 10,
+      "cluster_length_penalty": 1.2,
+      "cluster_no_repeat_ngram_size": 3,
+      "temperature": 1.0,
+      "top_k": 50,
+      "top_p": 0.95,
+      "do_sample": false,
+      "early_stopping": true,
+      "diversity_penalty": 0.5
+    }
+  },
+  "models": {
+    "PEGASUS": "google/pegasus-multi_news",
+    "PRIMERA": "allenai/PRIMERA"
+  },
+  "rouge_summary": {
+    "PEGASUS": {
+      "rouge1": 0.4110347908019434,
+      "rouge2": 0.1120776177905771,
+      "rougeL": 0.1860332737004151,
+      "avg_chunks": 3.2,
+      "token_efficiency": 86.6621663948259
+    },
+    "PRIMERA": {
+      "rouge1": 0.3783107726062732,
+      "rouge2": 0.10027494105671245,
+      "rougeL": 0.16817236222239412,
+      "avg_chunks": 3.4,
+      "token_efficiency": 86.71778188734869
+    }
+  },
+  "significance": {
+    "rouge1_f1": {
+      "model1_mean": 0.4110347908019434,
+      "model2_mean": 0.3783107726062732,
+      "improvement": -7.961374299198483,
+      "p_value": 0.18150811071795675,
+      "significant": 
