@@ -6,3 +6,11 @@ sentencepiece
 evaluate
 rouge-score
 protobuf
+numpy
+scipy
+matplotlib
+seaborn
+nltk
+tqdm
+# Optional: for semantic coherence features
+sentence-transformers
