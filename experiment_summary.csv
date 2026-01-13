@@ -1,0 +1,4 @@
+Method,Efficiency,Chunks_Per_Doc
+full,96.92812153872921,3.92
+no_semantic,97.57054698172625,3.68
+no_overlap,99.48656385682509,3.54
