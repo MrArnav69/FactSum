@@ -65,6 +65,7 @@ class FactScorer:
             summary_sents = sent_tokenize(summary)
         except LookupError:
              nltk.download('punkt')
+             nltk.download('punkt_tab')
              summary_sents = sent_tokenize(summary)
              
         if not summary_sents:

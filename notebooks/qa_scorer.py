@@ -66,6 +66,7 @@ class QAScorer:
             sentences = sent_tokenize(text)
         except:
              nltk.download('punkt')
+             nltk.download('punkt_tab')
              sentences = sent_tokenize(text)
              
         questions = []
