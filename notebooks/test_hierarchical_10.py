@@ -6,34 +6,27 @@ import pandas as pd
 from tqdm import tqdm
 from datasets import load_dataset
 import evaluate
+import sys
+
+# Ensure notebooks directory is in path
+sys.path.append('/Users/mrarnav69/Documents/FactSum/notebooks')
 from hierarchical_summarizer import HierarchicalSummarizer
 
-def run_baseline_experiment(num_samples: int = 50, device: str = 'cpu'):
-    """
-    Run the Baseline Experiment (Method B for the paper).
-    
-    Objective: 
-    Measure the performance of SOTA Hierarchical Summarization 
-    (Adaptive Semantic Chunking + PEGASUS) *without* Fact Verification.
-    
-    This establishes the 'strong baseline' that we aim to improve upon.
-    """
-    print(f"🚀 Starting Baseline Experiment")
-    print(f"   Samples: {num_samples}")
+def test_hierarchical_10(num_samples: int = 10, device: str = 'cpu'):
+    print(f"🚀 Testing Hierarchical Summarizer with {num_samples} samples")
     print(f"   Device:  {device}")
     
     # 1. Load Dataset
     print("Loading Multi-News dataset (Test Split)...")
     dataset = load_dataset("Awesome075/multi_news_parquet", split="test")
     
-    # Select random samples
+    # Select random samples to match baseline_metrics.json conditions
     np.random.seed(42)
     indices = np.random.choice(len(dataset), min(num_samples, len(dataset)), replace=False)
-    # Convert to list of dicts for easier handling
     data_samples = [dataset[int(i)] for i in indices]
     
     # 2. Initialize Model
-    print("Initializing SOTA Hierarchical Summarizer...")
+    print("Initializing Hierarchical Summarizer...")
     summarizer = HierarchicalSummarizer(device=device)
     
     # 3. Load Metrics
@@ -50,17 +43,14 @@ def run_baseline_experiment(num_samples: int = 50, device: str = 'cpu'):
         doc = item['document']
         ref = item['summary']
         
-        # Run Pipeline
         try:
             output = summarizer.summarize_document(doc)
             gen_summary = output['final_summary']
             
-            # Save detailed log
             results.append({
                 'reference': ref,
                 'generated': gen_summary,
-                'num_chunks': len(output['chunks']),
-                'chunk_summaries': output['chunk_summaries']
+                'num_chunks': len(output['chunks'])
             })
             
             generated_summaries.append(gen_summary)
@@ -79,29 +69,19 @@ def run_baseline_experiment(num_samples: int = 50, device: str = 'cpu'):
     )
     
     print("\n" + "="*50)
-    print("BASELINE RESULTS (Multi-News Subset)")
+    print("TEST RESULTS (10 Samples)")
     print("="*50)
     print(f"ROUGE-1: {metrics['rouge1']*100:.2f}")
     print(f"ROUGE-2: {metrics['rouge2']*100:.2f}")
     print(f"ROUGE-L: {metrics['rougeL']*100:.2f}")
     print("="*50)
     
-    # Save Results
+    # Save to a temp results file
+    os.makedirs('/Users/mrarnav69/Documents/FactSum/results', exist_ok=True)
     df = pd.DataFrame(results)
-    df.to_csv('/Users/mrarnav69/Documents/FactSum/results/baseline_experiment_details.csv', index=False)
-    
-    summary_stats = {
-        'num_samples': len(results),
-        'metrics': metrics,
-        'config': 'Hierarchical PEGASUS (SOTA Chunking)'
-    }
-    with open('baseline_metrics.json', 'w') as f:
-        json.dump(summary_stats, f, indent=2)
-        
-    print(f"\nSaved detailed outputs to 'baseline_experiment_details.csv'")
-    print(f"Saved metrics to 'baseline_metrics.json'")
+    output_path = '/Users/mrarnav69/Documents/FactSum/results/test_10_samples.csv'
+    df.to_csv(output_path, index=False)
+    print(f"\nSaved test results to '{output_path}'")
 
 if __name__ == "__main__":
-    # Defaulting to CPU for stability based on previous testing
-    # User can change to 'cuda' or 'mps' if they trust their driver stability
-    run_baseline_experiment(num_samples=20, device='cpu') 
+    test_hierarchical_10(num_samples=10, device='cpu')
